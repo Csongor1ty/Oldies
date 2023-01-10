@@ -1,0 +1,55 @@
+--------------------------------------------------------------------
+-- A kommentezett rész után készítsd el az 5. feladat megoldását! --
+--------------------------------------------------------------------
+
+-- ket proc koztes csat, 'q'-ra leall, beolv
+
+
+PROC main(CHAN BYTE stdin, stdout, stderr)
+  CHAN INT csati:
+
+  PROC a(CHAN BYTE in, CHAN INT out) -- stdin be, koztes int csatin tovabb
+    BOOL do:
+    BYTE char:
+    SEQ
+      do := TRUE
+      WHILE do
+        SEQ
+          in ? char --beolv
+          IF
+            'q' = char
+              SEQ
+                do := FALSE
+                out ! (-1) -- masik proc ertesitese
+            ('0' <= char) AND (char <= '9') -- ascii ellenorzes
+              out ! INT(char - '0')
+            TRUE
+              SKIP
+  :
+
+
+  PROC b(CHAN INT in, CHAN BYTE out)
+    BOOL do:
+    INT x:
+    SEQ
+      do := TRUE
+      WHILE do
+        SEQ
+          in ? x --beolv
+          IF
+            (-1) = x
+              do := FALSE
+            ((x REM 2) = 0) OR ((x REM 3) = 0)
+              out ! BYTE(x + '0')
+            TRUE
+              SKIP
+  :
+  
+  
+  PAR
+    a(stdin, csati)
+    b(csati, stdout)
+
+:
+
+
